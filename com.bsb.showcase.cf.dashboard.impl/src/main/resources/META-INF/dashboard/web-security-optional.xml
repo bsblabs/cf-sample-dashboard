@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <description>
+        Base security configuration including configuration for REST services.
+    </description>
+
+    <sec:http pattern="/**/*.html" security="none"/>
+    <sec:http pattern="/**/*.js" security="none"/>
+    <sec:http pattern="/**/*.css" security="none"/>
+    <sec:http pattern="/**/*.gif" security="none"/>
+    <sec:http pattern="/**/*.jpg" security="none"/>
+    <sec:http pattern="/**/*.jpeg" security="none"/>
+    <sec:http pattern="/**/*.png" security="none"/>
+    <sec:http pattern="/**/*.ico" security="none"/>
+    <sec:http pattern="/index.html" security="none"/>
+    <sec:http pattern="/**/*.properties" security="none"/>
+
+
+    <bean id="webServiceEntryPointMatcher"
+          class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+        <constructor-arg value="/services/**"/>
+    </bean>
+
+    <bean id="webServiceEntryPoint"
+          class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+        <property name="realmName" value="Sample Dashboard"/>
+    </bean>
+
+    <bean id="webServiceAuthenticationProvider"
+          class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="techUserDetailsService"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <bean id="techUserDetailsService" class="com.bsb.showcase.cf.dashboard.security.TechUserDetailsService"/>
+
+    <bean id="webServiceAuthenticationFilter"
+          class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+        <constructor-arg ref="authenticationManager"/>
+        <constructor-arg ref="webServiceEntryPoint"/>
+    </bean>
+
+    <bean id="logoutFilter"
+          class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <constructor-arg ref="logoutSuccessHandler"/>
+        <constructor-arg ref="logoutHandlers"/>
+
+        <property name="logoutRequestMatcher">
+            <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                <constructor-arg value="/logout"/>
+            </bean>
+        </property>
+    </bean>
+
+    <util:list id="logoutHandlers">
+        <ref bean="logoutHandler"/>
+    </util:list>
+
+    <bean id="logoutSuccessHandler"
+          class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler"/>
+
+    <bean id="logoutHandler"
+          class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+
+    <bean id="userInitializer"
+          class="com.bsb.showcase.cf.dashboard.user.TechUserInitializer">
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+
+</beans>
