@@ -58,7 +58,7 @@
                     access-token-uri="${oauth.token.access.uri}"
                     user-authorization-uri="${oauth.authorization.uri}"
                     use-current-uri="true"
-                    scope="openid,cloud_controller.read,cloud_controller_service_permissions.read"/>
+                    scope="openid,cloud_controller_service_permissions.read"/>
 
     <oauth:rest-template id="restTemplate" resource="uaa"/>
 
