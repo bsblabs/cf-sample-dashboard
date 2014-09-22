@@ -16,13 +16,13 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class DashboardApplication extends SpringBootServletInitializer {
 
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(DashboardApplication.class, args);
+    }
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(DashboardApplication.class);
-    }
-
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(DashboardApplication.class, args);
     }
 
     @Bean
