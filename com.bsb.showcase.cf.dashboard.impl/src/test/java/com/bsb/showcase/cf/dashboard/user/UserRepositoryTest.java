@@ -1,16 +1,12 @@
 package com.bsb.showcase.cf.dashboard.user;
 
-import static org.junit.Assert.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * @author Sebastien Gerard
  */
 
-public class UserRepositoryTest extends BaseUserRepositoryTest<User> {
+public class UserRepositoryTest /*extends BaseUserRepositoryTest<User>*/ {
 
-    @Autowired
+/*    @Autowired
     private UserRepository repository;
 
     @Override
@@ -33,5 +29,5 @@ public class UserRepositoryTest extends BaseUserRepositoryTest<User> {
         super.assertUser(expected, actual);
 
         assertEquals(expected.getFullName(), actual.getFullName());
-    }
+    }*/
 }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * Stub implementation of a Cloud Foundry Controller.
+ *
  * @author Sebastien Gerard
  */
 @RestController

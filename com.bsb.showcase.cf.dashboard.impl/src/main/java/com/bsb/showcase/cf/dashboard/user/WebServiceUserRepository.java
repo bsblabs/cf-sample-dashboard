@@ -1,18 +1,20 @@
 package com.bsb.showcase.cf.dashboard.user;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Base {@link CrudRepository} for {@link BaseUser}.
+ * {@link CrudRepository} for {@link WebServiceUser}.
  *
  * @author Sebastien Gerard
  */
-public interface BaseUserRepository<U extends BaseUser> extends CrudRepository<U, Long> {
+@Repository
+public interface WebServiceUserRepository extends CrudRepository<WebServiceUser, Long> {
 
     /**
      * Finds the user by his name.
      *
      * @return the matching user, can be <tt>null</tt>
      */
-    U findByName(String name);
+    WebServiceUser findByName(String name);
 }

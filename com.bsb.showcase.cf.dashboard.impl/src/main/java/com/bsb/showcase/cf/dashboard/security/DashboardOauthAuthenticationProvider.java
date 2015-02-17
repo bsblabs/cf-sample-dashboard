@@ -1,6 +1,5 @@
 package com.bsb.showcase.cf.dashboard.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,6 @@ public class DashboardOauthAuthenticationProvider implements AuthenticationProvi
 
     private final UserRepository userRepository;
 
-    @Autowired
     public DashboardOauthAuthenticationProvider(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -47,8 +45,7 @@ public class DashboardOauthAuthenticationProvider implements AuthenticationProvi
                 userRepository.save(user);
             }
         } catch (Exception e) {
-            throw new InternalAuthenticationServiceException("Error while creating a user based on ["
-                  + name + "]", e);
+            throw new InternalAuthenticationServiceException("Error while creating a user based on [" + name + "]", e);
         }
 
         return authentication;

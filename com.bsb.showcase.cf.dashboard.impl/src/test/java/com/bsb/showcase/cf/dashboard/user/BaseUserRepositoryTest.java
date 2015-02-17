@@ -12,9 +12,9 @@ import com.bsb.showcase.cf.dashboard.AbstractDashboardTest;
  *
  * @author Sebastien Gerard
  */
-public abstract class BaseUserRepositoryTest<U extends BaseUser> extends AbstractDashboardTest {
+public abstract class BaseUserRepositoryTest/*<U extends BaseUser> extends AbstractDashboardTest*/ {
 
-    public static final String DEFAULT_NAME = "UserRepositoryTestUserName";
+/*    public static final String DEFAULT_NAME = "UserRepositoryTestUserName";
 
     @Rule
     public final EntityCleanupRule cleanupRule = new EntityCleanupRule();
@@ -46,5 +46,5 @@ public abstract class BaseUserRepositoryTest<U extends BaseUser> extends Abstrac
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
-    }
+    }*/
 }

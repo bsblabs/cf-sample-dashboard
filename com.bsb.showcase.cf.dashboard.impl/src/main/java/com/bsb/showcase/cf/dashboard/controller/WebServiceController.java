@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Technical controller accessed by non-human users.
+ * Controller for web-services.
  *
  * @author Sebastien Gerard
  */
 @RestController
-@SuppressWarnings("unused")
-public class TechController {
+public class WebServiceController {
 
     @RequestMapping("/services/v1/ping")
     public Map<?, ?> ping() {

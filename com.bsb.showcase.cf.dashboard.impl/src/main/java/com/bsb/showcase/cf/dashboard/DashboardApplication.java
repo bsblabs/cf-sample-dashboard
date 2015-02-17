@@ -2,9 +2,6 @@ package com.bsb.showcase.cf.dashboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,19 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-public class DashboardApplication extends SpringBootServletInitializer {
+public class DashboardApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(DashboardApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(DashboardApplication.class);
-    }
-
-    @Bean
-    public ApplicationSecurity applicationSecurity() {
-        return new ApplicationSecurity();
     }
 }

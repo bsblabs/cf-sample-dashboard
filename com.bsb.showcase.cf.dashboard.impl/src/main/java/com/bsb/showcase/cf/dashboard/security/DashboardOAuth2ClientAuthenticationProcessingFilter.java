@@ -14,16 +14,16 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 /**
- * Extension of {@link OAuth2ClientAuthenticationProcessingFilter} that use the
+ * Extension of {@link OAuth2ClientAuthenticationProcessingFilter} that uses the
  * {@link org.springframework.security.authentication.AuthenticationManager}.
- * This implementation also start authentication if there is no authentication and
+ * This implementation also starts authentication if there is no authentication and
  * if the current request requires authentication.
  *
  * @author Sebastien Gerard
  */
 public class DashboardOAuth2ClientAuthenticationProcessingFilter extends OAuth2ClientAuthenticationProcessingFilter {
 
-    private AuthenticationDetailsSource<HttpServletRequest, Object> detailsSource;
+    private AuthenticationDetailsSource<HttpServletRequest, ?> detailsSource;
 
     public DashboardOAuth2ClientAuthenticationProcessingFilter() {
         super("/");
@@ -50,7 +50,7 @@ public class DashboardOAuth2ClientAuthenticationProcessingFilter extends OAuth2C
     /**
      * Sets the optional source providing {@link Authentication#getDetails() authentication details}.
      */
-    public void setDetailsSource(AuthenticationDetailsSource<HttpServletRequest, Object> detailsSource) {
+    public void setDetailsSource(AuthenticationDetailsSource<HttpServletRequest, ?> detailsSource) {
         this.detailsSource = detailsSource;
     }
 }

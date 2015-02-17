@@ -6,7 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -34,7 +35,7 @@ public class DashboardOAuthAuthenticationDetailsSource
      */
     public static final String MANAGED_KEY = "manage";
 
-    private static final Logger logger = Logger.getLogger(DashboardOAuthAuthenticationDetailsSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(DashboardOAuthAuthenticationDetailsSource.class);
 
     private final RestTemplate restTemplate;
     private final String serviceInstanceIdFile;

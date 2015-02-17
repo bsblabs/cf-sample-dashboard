@@ -1,15 +1,11 @@
 package com.bsb.showcase.cf.dashboard.user;
 
-import static org.junit.Assert.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * @author Sebastien Gerard
  */
-public class TechUserRepositoryTest extends BaseUserRepositoryTest<TechUser> {
+public class TechUserRepositoryTest /*extends BaseUserRepositoryTest<TechUser>*/ {
 
-    public static final String DEFAULT_PASSWORD = "password";
+/*    public static final String DEFAULT_PASSWORD = "password";
 
     @Autowired
     private TechUserRepository repository;
@@ -34,5 +30,5 @@ public class TechUserRepositoryTest extends BaseUserRepositoryTest<TechUser> {
         super.assertUser(expected, actual);
 
         assertEquals(expected.getPassword(), actual.getPassword());
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 Sample Cloud Foundry Service Dashboard
 =================
 
-This demo illustrates how we can develop a dashboard for a Cloud Foundry service. The dashboard interacts with 2 main Cloud Foundry components: the UAA and the Cloud Controller. The UAA is used to authenticate the user. The authentication is based on OAUTH (SSO mechanism). The Cloud Controller (in the scope of a dashboard) is used to to check that the current user can access the current dashboard instance.
+This demo illustrates how we can develop a dashboard for a Cloud Foundry service. The dashboard interacts with 2 main Cloud Foundry components: the UAA and the Cloud Controller. The UAA is used to authenticate the user. The authentication is based on OAuth2 (SSO mechanism). The Cloud Controller (in the scope of a dashboard) is used to to check that the current user can access the current dashboard instance.
 
 More information:
 * [Cloud Foundry UAA, doc](http://docs.cloudfoundry.org/concepts/architecture/uaa.html)
@@ -20,9 +20,9 @@ Dashboard Features
 
 The dashboard can be accessed in 2 different ways: from a web page, or from a REST endpoint.
 
-When a human user accesses the web page, he is redirected to the UAA login page. Once authenticated on the UAA, the browser comes back on the dashboard application. The dashboard displays the user's full name and a link to log out of the dashboard and the more globally out of the UAA. Every logged on client is matched to an internal user. The whole authentication mechanism is performed externally. As a consequence, passwords are not stored in this application. In this implementation, all the authentication events (local login and logout) are propagated thanks to the extension *DashboardOAuth2ClientAuthenticationProcessingFilter* and thanks to the *AuthenticationManager*.
+When a human user accesses the web page, he is redirected to the UAA login page. Once authenticated on the UAA, the browser comes back on the dashboard application. The dashboard displays the user's full name and a link to log out of the dashboard and the more globally out of the UAA. Every logged on client is matched to an internal user. The whole authentication mechanism is performed externally. As a consequence, passwords are not stored in this application.
 
-The REST endpoint, a technical endpoint is secured via basic authentication. The idea was also to illustrate a different way to perform authentication on the dashboard. The authentication mechanism is based on the JPA entity *TechUser*.
+The REST endpoint, a technical endpoint is secured via basic authentication. The idea was also to illustrate a different way to perform authentication on the service. The authentication mechanism is based on the JPA entity *TechUser*.
 
 The REST technical endpoint simply returns an "Hello World":
 
@@ -75,7 +75,7 @@ The [UAA](https://github.com/cloudfoundry/uaa) can be executed in standalone by 
 </entry>
 ```
 
-Don't forget to change `[DASHBOARD URL]` by the dashboard domain (could be an IP, "localhost", or a domain).
+Don't forget to change `[DASHBOARD URL]` by the dashboard domain (could be an IP, "localhost", or a domain). If you only want to make a local test, just use `http://localhost`.
 
 By default, there is a user called "marissa" with the password "koala". You can add extra ones by modifying *[scim-endpoints.xml](https://github.com/cloudfoundry/uaa/blob/master/uaa/src/main/webapp/WEB-INF/spring/scim-endpoints.xml)*.
 
@@ -197,5 +197,5 @@ java -jar target/com.bsb.showcase.cf.dashboard.impl-1.0.0-SNAPSHOT.war
 ```
 
 As described in the initial section there are two ways to access the dashboard:
-- In the webapp way, the dashboard can be accessed by default at the URL `http://localhost:8989/`; please use the credentials contained in your UAA.
+- The dashboard can be accessed by default at the URL `http://localhost:8989/dashboard/`; please use the credentials contained in your UAA.
 - The technical endpoint can be accessed by default at `http://localhost:8989/services/v1/ping`; please use the credentials `admin:admin` (basic authentication).
