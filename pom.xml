@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.bsb.showcase.cf.dashboard</groupId>
-    <artifactId>com.bsb.showcase.cf.dashboard</artifactId>
+    <groupId>com.bsb.showcase.cf.service</groupId>
+    <artifactId>com.bsb.showcase.cf.service</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Cloud Foundry Sample Dashboard Showcase</name>
+    <name>Cloud Foundry Sample Service Showcase</name>
     <description>
-        Demonstrates how we can develop a Cloud Foundry dashboard with Spring.
+        Demonstrates how we can develop a Cloud Foundry service with Spring.
     </description>
 
     <parent>
@@ -47,8 +47,8 @@
     </profiles>
 
     <modules>
-        <module>com.bsb.showcase.cf.dashboard.controller</module>
-        <module>com.bsb.showcase.cf.dashboard.impl</module>
+        <module>com.bsb.showcase.cf.service.controller</module>
+        <module>com.bsb.showcase.cf.service.impl</module>
     </modules>
 
     <dependencyManagement>

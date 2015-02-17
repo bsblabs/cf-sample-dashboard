@@ -142,7 +142,7 @@ or by doing:
 
 ```
 mvn clean install
-java -jar target/com.bsb.showcase.cf.dashboard.controller-1.0.0-SNAPSHOT.jar
+java -jar target/com.bsb.showcase.cf.service.controller-1.0.0-SNAPSHOT.jar
 ```
 
 ### Cloud Controller in a Cloud Foundry Instance
@@ -164,7 +164,7 @@ cf set-space-role john com.bsb development SpaceDeveloper
 Dashboard
 ---------------------
 
-The module *com.bsb.showcase.cf.dashboard.impl* contains the dashboard implementation. It will interact with the Cloud Controller and the UAA.
+The module *com.bsb.showcase.cf.service.impl* contains the dashboard implementation. It will interact with the Cloud Controller and the UAA.
 
 The default Cloud Controller URL is `http://localhost:8888`. This value can be customized by overriding the Maven property `cf.controller.port`. For instance:
 
@@ -193,9 +193,9 @@ or by doing:
 
 ```
 mvn clean install
-java -jar target/com.bsb.showcase.cf.dashboard.impl-1.0.0-SNAPSHOT.war
+java -jar target/com.bsb.showcase.cf.service.impl-1.0.0-SNAPSHOT.jar
 ```
 
-As described in the initial section there are two ways to access the dashboard:
+As described in the initial section there are two ways to access the application:
 - The dashboard can be accessed by default at the URL `http://localhost:8989/dashboard/`; please use the credentials contained in your UAA.
-- The technical endpoint can be accessed by default at `http://localhost:8989/services/v1/ping`; please use the credentials `admin:admin` (basic authentication).
+- The web-service can be accessed by default at `http://localhost:8989/services/v1/ping`; please use the credentials `admin:admin` (basic authentication).
