@@ -1,64 +1,78 @@
 package com.bsb.showcase.cf.service.user;
 
-import static com.bsb.showcase.cf.test.service.StubPasswordEncoder.*;
+import static com.bsb.showcase.cf.test.service.user.WebServiceUserTestHelper.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import java.util.UUID;
+import javax.annotation.PostConstruct;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bsb.showcase.cf.service.AbstractCfServiceTest;
-import com.bsb.showcase.cf.test.service.StubPasswordEncoder;
+import com.bsb.showcase.cf.test.service.user.WebServiceUserTestHelper;
 
 /**
  * @author Sebastien Gerard
  */
+@Transactional
 public class WebServiceUserInitializerTest extends AbstractCfServiceTest {
 
-    @Rule
-    public final EntityCleanupRule cleanupRule = new EntityCleanupRule();
-
     @Autowired
-    private WebServiceUserRepository webServiceUserRepository;
+    private WebServiceUserRepository repository;
+
+    private WebServiceUserTestHelper testHelper;
 
     @Test
-    public void alreadyPresent() {
-        final String name = "name";
-
-        cleanupRule.saveEntity(webServiceUserRepository, createUser(name));
-
-        createInitializer(name).initializeUser();
+    public void initializeUserSpringBean() {
+        assertNotNull(repository.findByName("admin"));
     }
 
     @Test
-    public void notPresent() {
-        final String name = UUID.randomUUID().toString().substring(8);
+    public void initializeUserAlreadyPresent() {
+        final WebServiceUser billApp = repository.save(billAppWebServiceUser());
+        final WebServiceUserInitializer initializer = createInitializer(createEncoder(), billApp);
 
-        assertNull(webServiceUserRepository.findByName(name));
+        initializer.initializeUser();
 
-        createInitializer(name).initializeUser();
-
-        final WebServiceUser webServiceUser = webServiceUserRepository.findByName(name);
-        try {
-            assertNotNull(webServiceUser);
-            assertEquals(StubPasswordEncoder.ENCODED_PWD, webServiceUser.getPassword());
-        } finally {
-            webServiceUserRepository.delete(webServiceUser);
-        }
+        testHelper.assertExists(billApp);
     }
 
-    private WebServiceUser createUser(String name) {
-        final WebServiceUser user = new WebServiceUser();
+    @Test
+    public void initializeUserNotPresent() {
+        final WebServiceUser billApp = billAppWebServiceUser();
+        final WebServiceUser billAppEncoded = billAppWebServiceUser();
+        billAppEncoded.setPassword("billAppPasswordEncoded");
 
-        user.setName(name);
-        user.setPassword(name);
+        final PasswordEncoder encoder = createEncoder(billApp.getPassword(), billAppEncoded.getPassword());
+        final WebServiceUserInitializer initializer = createInitializer(encoder, billApp);
 
-        return user;
+        initializer.initializeUser();
+
+        testHelper.assertExists(billAppEncoded);
     }
 
-    private WebServiceUserInitializer createInitializer(String name) {
-        return new WebServiceUserInitializer(webServiceUserRepository, stubPasswordEncoder(), name, name);
+    private PasswordEncoder createEncoder() {
+        return mock(PasswordEncoder.class);
+    }
+
+    private PasswordEncoder createEncoder(String password, String encoded){
+        final PasswordEncoder passwordEncoder = createEncoder();
+
+        when(passwordEncoder.encode(password))
+              .thenReturn(encoded);
+
+        return passwordEncoder;
+    }
+
+    private WebServiceUserInitializer createInitializer(PasswordEncoder encoder, WebServiceUser user) {
+        return new WebServiceUserInitializer(repository, encoder, user.getName(), user.getPassword());
+    }
+
+    @PostConstruct
+    void initializeHelper(){
+        testHelper = new WebServiceUserTestHelper(repository);
     }
 }

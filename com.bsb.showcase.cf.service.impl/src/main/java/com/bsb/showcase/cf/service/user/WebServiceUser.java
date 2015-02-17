@@ -32,6 +32,12 @@ public class WebServiceUser implements Serializable {
     public WebServiceUser() {
     }
 
+    public WebServiceUser(Long id, String name, String password) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+    }
+
     /**
      * Returns the technical entity id.
      */

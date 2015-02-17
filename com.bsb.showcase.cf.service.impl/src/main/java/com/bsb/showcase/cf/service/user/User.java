@@ -32,6 +32,12 @@ public class User  implements Serializable {
     public User() {
     }
 
+    public User(long id, String name, String fullName) {
+        this.id = id;
+        this.name = name;
+        this.fullName = fullName;
+    }
+
     /**
      * Returns the technical entity id.
      */

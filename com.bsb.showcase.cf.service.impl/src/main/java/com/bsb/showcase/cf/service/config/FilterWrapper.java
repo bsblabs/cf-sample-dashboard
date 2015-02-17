@@ -11,6 +11,9 @@ import javax.servlet.Filter;
  */
 class FilterWrapper {
 
+    /**
+     * Returns a wrapper around the specified filter.
+     */
     static FilterWrapper wrap(Filter filter){
         return new FilterWrapper(filter);
     }
@@ -21,6 +24,9 @@ class FilterWrapper {
         this.filter = filter;
     }
 
+    /**
+     * Un-wraps the filter.
+     */
     Filter unwrap() {
         return filter;
     }

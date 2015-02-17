@@ -1,33 +1,38 @@
 package com.bsb.showcase.cf.service.user;
 
+import static com.bsb.showcase.cf.test.service.user.UserTestUtils.*;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bsb.showcase.cf.service.AbstractCfServiceTest;
+
 /**
  * @author Sebastien Gerard
  */
+@Transactional
+public class UserRepositoryTest extends AbstractCfServiceTest {
 
-public class UserRepositoryTest /*extends BaseUserRepositoryTest<User>*/ {
-
-/*    @Autowired
+    @Autowired
     private UserRepository repository;
 
-    @Override
-    protected User createUser(String name) {
-        final User user = new User();
+    @Test
+    public void findByName() {
+        final User john = repository.save(johnUser());
 
-        user.setName(name);
-        user.setFullName(name);
+        final User foundByName = repository.findByName(john.getName());
 
-        return user;
+        assertPersistentUserEquals(john, foundByName);
     }
 
-    @Override
-    protected UserRepository getRepository() {
-        return repository;
+    @Test
+    public void findByNameNoMatch() {
+        final User john = repository.save(johnUser());
+
+        final User foundByName = repository.findByName(john.getName() + "2");
+
+        assertNull(foundByName);
     }
-
-    @Override
-    protected void assertUser(User expected, User actual) {
-        super.assertUser(expected, actual);
-
-        assertEquals(expected.getFullName(), actual.getFullName());
-    }*/
 }
