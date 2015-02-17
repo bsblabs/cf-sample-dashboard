@@ -19,35 +19,35 @@ import com.bsb.showcase.cf.test.service.TestableRestTemplate;
 /**
  * @author Sebastien Gerard
  */
-public class DashboardOAuthAuthenticationDetailsSourceTest extends AbstractCfServiceTest {
+public class DashboardAuthenticationDetailsSourceTest extends AbstractCfServiceTest {
 
     public static final String API_URL = "http://api.domain.com/v2/service_instances/[SUID]/permissions";
     public static final String USER_INFO_URL = "http://uaa.domain.com/userinfo";
 
-    @Value("${dashboard.suid.file}")
+    @Value("${cf.service.suid.file}")
     private String serviceInstanceIdFile;
 
     @Test
     public void isManagingApp() {
-        final DashboardOAuthAuthenticationDetailsSource source = createSource(Boolean.TRUE, "", "");
+        final DashboardAuthenticationDetailsSource source = createSource(Boolean.TRUE, "", "");
 
-        final DashboardOAuth2AuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
-        assertTrue(details.isManagingApp());
+        final DashboardAuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
+        assertTrue(details.isManagingService());
     }
 
     @Test
     public void isNotManagingApp() {
-        final DashboardOAuthAuthenticationDetailsSource source = createSource(Boolean.FALSE, "", "");
+        final DashboardAuthenticationDetailsSource source = createSource(Boolean.FALSE, "", "");
 
-        final DashboardOAuth2AuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
-        assertFalse(details.isManagingApp());
+        final DashboardAuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
+        assertFalse(details.isManagingService());
     }
 
     @Test
     public void fullName() {
-        final DashboardOAuthAuthenticationDetailsSource source = createSource(true, "John", "Smith");
+        final DashboardAuthenticationDetailsSource source = createSource(true, "John", "Smith");
 
-        final DashboardOAuth2AuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
+        final DashboardAuthenticationDetails details = source.buildDetails(new MockHttpServletRequest());
         assertEquals("John Smith", details.getUserFullName());
     }
 
@@ -112,21 +112,21 @@ public class DashboardOAuthAuthenticationDetailsSourceTest extends AbstractCfSer
         assertNull(createSource().getUserFullName(map()));
     }
 
-    private DashboardOAuthAuthenticationDetailsSource createSource() {
+    private DashboardAuthenticationDetailsSource createSource() {
         return createSource(true, "John", "Smith");
     }
 
-    private DashboardOAuthAuthenticationDetailsSource createSource(Boolean managing, String firstName, String lastName) {
+    private DashboardAuthenticationDetailsSource createSource(Boolean managing, String firstName, String lastName) {
         final TestableRestTemplate restTemplate = testableRestTemplate()
               .addResult("http://api.domain.com/v2/service_instances/1234567890/permissions",
-                    map(entry(DashboardOAuthAuthenticationDetailsSource.MANAGED_KEY, managing.toString())))
+                    map(entry(DashboardAuthenticationDetailsSource.MANAGED_KEY, managing.toString())))
               .addResult(USER_INFO_URL, map(entry("firstName", firstName), entry("lastName", lastName)));
 
         return createSource(restTemplate);
     }
 
-    private DashboardOAuthAuthenticationDetailsSource createSource(TestableRestTemplate restTemplate) {
-        return new DashboardOAuthAuthenticationDetailsSource(restTemplate, serviceInstanceIdFile, USER_INFO_URL, API_URL);
+    private DashboardAuthenticationDetailsSource createSource(TestableRestTemplate restTemplate) {
+        return new DashboardAuthenticationDetailsSource(restTemplate, serviceInstanceIdFile, USER_INFO_URL, API_URL);
     }
 
     @SafeVarargs

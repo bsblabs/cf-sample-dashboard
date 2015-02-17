@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author Sebastien Gerard
  */
-public class DashboardOAuthAuthenticationDetailsSource
+public class DashboardAuthenticationDetailsSource
       implements AuthenticationDetailsSource<HttpServletRequest, OAuth2AuthenticationDetails> {
 
     /**
@@ -35,7 +35,7 @@ public class DashboardOAuthAuthenticationDetailsSource
      */
     public static final String MANAGED_KEY = "manage";
 
-    private static final Logger logger = LoggerFactory.getLogger(DashboardOAuthAuthenticationDetailsSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(DashboardAuthenticationDetailsSource.class);
 
     private final RestTemplate restTemplate;
     private final String serviceInstanceIdFile;
@@ -48,8 +48,8 @@ public class DashboardOAuthAuthenticationDetailsSource
      * @param userInfoUrl the URL used to get the current OAuth user details
      * @param apiUrl the URL used to get the service instance permission
      */
-    public DashboardOAuthAuthenticationDetailsSource(RestTemplate restTemplate, String serviceInstanceIdFile,
-                                                     String userInfoUrl, String apiUrl) {
+    public DashboardAuthenticationDetailsSource(RestTemplate restTemplate, String serviceInstanceIdFile,
+                                                String userInfoUrl, String apiUrl) {
         this.restTemplate = restTemplate;
         this.serviceInstanceIdFile = serviceInstanceIdFile;
         this.userInfoUrl = userInfoUrl;
@@ -57,8 +57,8 @@ public class DashboardOAuthAuthenticationDetailsSource
     }
 
     @Override
-    public DashboardOAuth2AuthenticationDetails buildDetails(HttpServletRequest request) {
-        return new DashboardOAuth2AuthenticationDetails(request, isManagingApp(), getUserFullName());
+    public DashboardAuthenticationDetails buildDetails(HttpServletRequest request) {
+        return new DashboardAuthenticationDetails(request, isManagingApp(), getUserFullName());
     }
 
     /**

@@ -25,7 +25,7 @@ import com.bsb.showcase.cf.test.service.TestableAuthenticationManager;
 /**
  * @author Sebastien Gerard
  */
-public class DashboardOAuth2ClientAuthenticationProcessingFilterTest extends AbstractCfServiceTest {
+public class DashboardAuthenticationProcessingFilterTest extends AbstractCfServiceTest {
 
     @Test
     public void notRequireAuthenticationAuthentication() {
@@ -46,7 +46,7 @@ public class DashboardOAuth2ClientAuthenticationProcessingFilterTest extends Abs
 
     @Test
     public void authenticateWithNoDetailSource() throws IOException, ServletException {
-        final DashboardOAuth2ClientAuthenticationProcessingFilter filter = createFilter();
+        final DashboardAuthenticationProcessingFilter filter = createFilter();
 
         final Authentication authentication
               = filter.attemptAuthentication(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -59,7 +59,7 @@ public class DashboardOAuth2ClientAuthenticationProcessingFilterTest extends Abs
 
     @Test
     public void authenticateWithDetailSource() throws IOException, ServletException {
-        final DashboardOAuth2ClientAuthenticationProcessingFilter filter = createFilter();
+        final DashboardAuthenticationProcessingFilter filter = createFilter();
 
         final String details = "details";
         filter.setDetailsSource(new AuthenticationDetailsSource<HttpServletRequest, Object>() {
@@ -78,9 +78,9 @@ public class DashboardOAuth2ClientAuthenticationProcessingFilterTest extends Abs
         assertEquals(details, authentication.getDetails());
     }
 
-    private DashboardOAuth2ClientAuthenticationProcessingFilter createFilter() {
-        final DashboardOAuth2ClientAuthenticationProcessingFilter filter
-              = new DashboardOAuth2ClientAuthenticationProcessingFilter();
+    private DashboardAuthenticationProcessingFilter createFilter() {
+        final DashboardAuthenticationProcessingFilter filter
+              = new DashboardAuthenticationProcessingFilter();
 
         filter.setAuthenticationManager(testableAuthenticationManager());
         filter.setRestTemplate(testableRestTemplate());
@@ -91,7 +91,7 @@ public class DashboardOAuth2ClientAuthenticationProcessingFilterTest extends Abs
     }
 
     private boolean launchRequireAuthentication() {
-        return new DashboardOAuth2ClientAuthenticationProcessingFilter()
+        return new DashboardAuthenticationProcessingFilter()
               .requiresAuthentication(new MockHttpServletRequest("GET", "/"), new MockHttpServletResponse());
     }
 }

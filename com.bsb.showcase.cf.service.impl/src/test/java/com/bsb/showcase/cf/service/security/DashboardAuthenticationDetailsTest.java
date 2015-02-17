@@ -10,11 +10,11 @@ import com.bsb.showcase.cf.service.AbstractCfServiceTest;
 /**
  * @author Sebastien Gerard
  */
-public class DashboardOAuth2AuthenticationDetailsTest extends AbstractCfServiceTest {
+public class DashboardAuthenticationDetailsTest extends AbstractCfServiceTest {
 
     @Test
     public void managingApp() {
-        assertTrue(new DashboardOAuth2AuthenticationDetails(new MockHttpServletRequest(), true, "name").isManagingApp());
+        assertTrue(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, "name").isManagingService());
     }
 
     @Test
@@ -22,6 +22,6 @@ public class DashboardOAuth2AuthenticationDetailsTest extends AbstractCfServiceT
         final String name = "name";
 
         assertEquals(name,
-              new DashboardOAuth2AuthenticationDetails(new MockHttpServletRequest(), false, name).getUserFullName());
+              new DashboardAuthenticationDetails(new MockHttpServletRequest(), false, name).getUserFullName());
     }
 }

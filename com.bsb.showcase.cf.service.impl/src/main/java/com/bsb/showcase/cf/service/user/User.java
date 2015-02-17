@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.NaturalId;
 
 /**
- * Dashboard human user.
+ * Dashboard user.
  *
  * @author Sebastien Gerard
  */

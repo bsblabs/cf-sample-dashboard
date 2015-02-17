@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bsb.showcase.cf.service.security.DashboardOAuth2AuthenticationDetails;
+import com.bsb.showcase.cf.service.security.DashboardAuthenticationDetails;
 
 /**
  * Controller for the dashboard.
@@ -23,7 +23,7 @@ public class DashboardController {
 
 
         modelAndView.addObject("userFullName",
-              ((DashboardOAuth2AuthenticationDetails) authentication.getDetails()).getUserFullName());
+              ((DashboardAuthenticationDetails) authentication.getDetails()).getUserFullName());
 
         modelAndView.setViewName("home");
 

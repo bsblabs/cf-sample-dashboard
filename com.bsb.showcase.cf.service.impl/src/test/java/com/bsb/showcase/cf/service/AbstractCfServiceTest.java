@@ -11,7 +11,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
  * @author Sebastien Gerard
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = DashboardApplication.class)
+@SpringApplicationConfiguration(classes = SampleCfServiceApplication.class)
 @WebAppConfiguration
 public abstract class AbstractCfServiceTest {
 }

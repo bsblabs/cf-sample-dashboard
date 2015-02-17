@@ -17,13 +17,13 @@ import com.bsb.showcase.cf.service.user.UserRepository;
 /**
  * @author Sebastien Gerard
  */
-public class DashboardOauthAuthenticationProviderTest extends AbstractCfServiceTest {
+public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
 
     @Rule
     public final EntityCleanupRule cleanupRule = new EntityCleanupRule();
 
     @Autowired
-    private DashboardOauthAuthenticationProvider provider;
+    private DashboardAuthenticationProvider provider;
 
     @Autowired
     private UserRepository userRepository;
@@ -36,7 +36,7 @@ public class DashboardOauthAuthenticationProviderTest extends AbstractCfServiceT
     @Test
     public void userAlreadyExist() {
         final User user = new User();
-        user.setName("DashboardOauthAuthenticationProviderTest.userAlreadyExist");
+        user.setName("DashboardAuthenticationProviderTest.userAlreadyExist");
         user.setFullName("John Smith");
 
         cleanupRule.saveEntity(userRepository, user);
@@ -48,7 +48,7 @@ public class DashboardOauthAuthenticationProviderTest extends AbstractCfServiceT
 
     @Test
     public void userNotExist() {
-        final String name = "DashboardOauthAuthenticationProviderTest.userAlreadyExist";
+        final String name = "DashboardAuthenticationProviderTest.userAlreadyExist";
         final String fullName = "John Smith";
 
         provider.authenticate(createAuthentication(name, fullName));
@@ -65,7 +65,7 @@ public class DashboardOauthAuthenticationProviderTest extends AbstractCfServiceT
     private TestingAuthenticationToken createAuthentication(String name, String fullName) {
         final TestingAuthenticationToken auth = new TestingAuthenticationToken(name, null);
 
-        auth.setDetails(new DashboardOAuth2AuthenticationDetails(new MockHttpServletRequest(), true, fullName));
+        auth.setDetails(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, fullName));
 
         return auth;
     }

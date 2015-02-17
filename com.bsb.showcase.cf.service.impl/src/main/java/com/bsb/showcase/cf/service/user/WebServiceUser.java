@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.NaturalId;
 
 /**
- * Technical user.
+ * Web-service user.
  *
  * @author Sebastien Gerard
  */

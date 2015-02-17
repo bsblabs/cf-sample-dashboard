@@ -32,12 +32,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.bsb.showcase.cf.service.security.DashboardAuthenticationDetails;
+import com.bsb.showcase.cf.service.security.DashboardAuthenticationDetailsSource;
+import com.bsb.showcase.cf.service.security.DashboardAuthenticationProcessingFilter;
+import com.bsb.showcase.cf.service.security.DashboardAuthenticationProvider;
 import com.bsb.showcase.cf.service.security.DashboardAuthenticationSuccessHandler;
-import com.bsb.showcase.cf.service.security.DashboardOAuth2AuthenticationDetails;
-import com.bsb.showcase.cf.service.security.DashboardOAuth2ClientAuthenticationProcessingFilter;
-import com.bsb.showcase.cf.service.security.DashboardOAuthAuthenticationDetailsSource;
-import com.bsb.showcase.cf.service.security.DashboardOauthAuthenticationProvider;
-import com.bsb.showcase.cf.service.security.UaaLogoutRedirectStrategy;
+import com.bsb.showcase.cf.service.security.DashboardLogoutRedirectStrategy;
 import com.bsb.showcase.cf.service.user.UserRepository;
 
 /**
@@ -50,37 +50,42 @@ public class DashboardSecurityConfiguration {
 
     public static final String CURRENT_URI = "currentUri";
 
+    /**
+     * Returns the SPeL expression checking that the current user is authorized
+     * to manage this service.
+     */
     public static String isManagingApp() {
         return "(authentication.details != null) " +
-              "and (authentication.details instanceof T(" + DashboardOAuth2AuthenticationDetails.class.getName() + ")) "
-              + "and authentication.details.managingApp";
+              "and (authentication.details instanceof T(" + DashboardAuthenticationDetails.class.getName() + ")) "
+              + "and authentication.details.managingService " +
+              "and hasRole('ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_USER + "')";
     }
 
-    @Value("${oauth.client.id}")
+    @Value("${cf.uaa.oauth.client.id}")
     private String clientId;
 
-    @Value("${oauth.client.secret}")
+    @Value("${cf.uaa.oauth.client.secret}")
     private String clientSecret;
 
-    @Value("${oauth.info.uri}")
+    @Value("${cf.uaa.oauth.info.uri}")
     private String oauthInfoUrl;
 
-    @Value("${api.url}")
+    @Value("${cf.api.url}")
     private String apiUrl;
 
-    @Value("${oauth.token.check.uri}")
+    @Value("${cf.uaa.oauth.token.check.uri}")
     private String checkTokenUri;
 
-    @Value("${oauth.authorization.uri}")
+    @Value("${cf.uaa.oauth.authorization.uri}")
     private String authorizationUri;
 
-    @Value("${oauth.token.access.uri}")
+    @Value("${cf.uaa.oauth.token.access.uri}")
     private String accessUri;
 
-    @Value("${oauth.logout.url}")
+    @Value("${cf.uaa.oauth.logout.url}")
     private String logoutUrl;
 
-    @Value("${dashboard.suid.file}")
+    @Value("${cf.service.suid.file}")
     private String suidFile;
 
     @Autowired
@@ -95,20 +100,20 @@ public class DashboardSecurityConfiguration {
         return new AntPathRequestMatcher("/dashboard/**");
     }
 
-    @Bean(name = "oAuth2ClientContextFilter")
-    public FilterWrapper oAuth2ClientContextFilter() {
-        // If it was a Filter bean it would be automatically added out of the Spring security filter chain
+    @Bean(name = "dashboardClientContextFilter")
+    public FilterWrapper dashboardClientContextFilter() {
+        // If it was a Filter bean it would be automatically added out of the Spring security filter chain.
         return wrap(new OAuth2ClientContextFilter());
     }
 
-    @Bean(name = "socialClientFilter")
+    @Bean(name = "dashboardSocialClientFilter")
     @Autowired
-    public FilterWrapper socialClientFilter() {
-        // If it was a Filter bean it would be automatically added out of the Spring security filter chain
-        final DashboardOAuth2ClientAuthenticationProcessingFilter filter
-              = new DashboardOAuth2ClientAuthenticationProcessingFilter();
+    public FilterWrapper dashboardSocialClientFilter() {
+        // If it was a Filter bean it would be automatically added out of the Spring security filter chain.
+        final DashboardAuthenticationProcessingFilter filter
+              = new DashboardAuthenticationProcessingFilter();
 
-        filter.setRestTemplate(oauthRestOperations());
+        filter.setRestTemplate(dashboardRestOperations());
         filter.setTokenServices(resourceServerTokenServices());
         filter.setAuthenticationManager(authenticationManager);
         filter.setRequiresAuthenticationRequestMatcher(dashboardEntryPointMatcher());
@@ -118,10 +123,10 @@ public class DashboardSecurityConfiguration {
         return wrap(filter);
     }
 
-    @Bean(name = "protectedResourceDetails")
+    @Bean(name = "dashboardProtectedResourceDetails")
     @Scope(value = WebApplicationContext.SCOPE_SESSION)
     @Autowired
-    public AuthorizationCodeResourceDetails protectedResourceDetails() {
+    public AuthorizationCodeResourceDetails dashboardProtectedResourceDetails() {
         final AuthorizationCodeResourceDetails resourceDetails = new AuthorizationCodeResourceDetails() {
             @Override
             public boolean isClientOnly() {
@@ -139,17 +144,17 @@ public class DashboardSecurityConfiguration {
         return resourceDetails;
     }
 
-    @Bean(name = "oauthClientContext")
+    @Bean(name = "dashboardClientContext")
     @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
     @Autowired
-    public OAuth2ClientContext oauthClientContext() {
-        return new DefaultOAuth2ClientContext(accessTokenRequest());
+    public OAuth2ClientContext dashboardClientContext() {
+        return new DefaultOAuth2ClientContext(dashboardAccessTokenRequest());
     }
 
-    @Bean(name = "accessTokenRequest")
+    @Bean(name = "dashboardAccessTokenRequest")
     @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     @Autowired
-    public AccessTokenRequest accessTokenRequest() {
+    public AccessTokenRequest dashboardAccessTokenRequest() {
         final DefaultAccessTokenRequest request = new DefaultAccessTokenRequest(httpServletRequest.getParameterMap());
 
         request.setCurrentUri(httpServletRequest.getAttribute(CURRENT_URI).toString());
@@ -157,11 +162,11 @@ public class DashboardSecurityConfiguration {
         return request;
     }
 
-    @Bean(name = "oauthRestOperations")
+    @Bean(name = "dashboardRestOperations")
     @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
     @Autowired
-    public OAuth2RestTemplate oauthRestOperations() {
-        return new OAuth2RestTemplate(protectedResourceDetails(), oauthClientContext());
+    public OAuth2RestTemplate dashboardRestOperations() {
+        return new OAuth2RestTemplate(dashboardProtectedResourceDetails(), dashboardClientContext());
     }
 
     @Bean(name = "accessTokenConverter")
@@ -193,20 +198,20 @@ public class DashboardSecurityConfiguration {
     @Bean(name = "dashboardAuthenticationDetailsSource")
     @Autowired
     public AuthenticationDetailsSource<HttpServletRequest, ?> dashboardAuthenticationDetailsSource() {
-        return new DashboardOAuthAuthenticationDetailsSource(oauthRestOperations(), suidFile, oauthInfoUrl, apiUrl);
+        return new DashboardAuthenticationDetailsSource(dashboardRestOperations(), suidFile, oauthInfoUrl, apiUrl);
     }
 
-    @Bean(name = "oAuthAuthenticationProvider")
+    @Bean(name = "dashboardAuthenticationProvider")
     @Autowired
-    public DashboardOauthAuthenticationProvider oAuthAuthenticationProvider(UserRepository userRepository) {
-        return new DashboardOauthAuthenticationProvider(userRepository);
+    public DashboardAuthenticationProvider dashboardAuthenticationProvider(UserRepository userRepository) {
+        return new DashboardAuthenticationProvider(userRepository);
     }
 
     @Bean(name = "dashboardLogoutSuccessHandler")
     public LogoutSuccessHandler dashboardLogoutSuccessHandler() {
         final SimpleUrlLogoutSuccessHandler logoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
 
-        logoutSuccessHandler.setRedirectStrategy(new UaaLogoutRedirectStrategy(logoutUrl));
+        logoutSuccessHandler.setRedirectStrategy(new DashboardLogoutRedirectStrategy(logoutUrl));
 
         return logoutSuccessHandler;
     }

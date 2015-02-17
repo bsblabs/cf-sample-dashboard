@@ -15,11 +15,11 @@ import com.bsb.showcase.cf.service.user.UserRepository;
  *
  * @author Sebastien Gerard
  */
-public class DashboardOauthAuthenticationProvider implements AuthenticationProvider {
+public class DashboardAuthenticationProvider implements AuthenticationProvider {
 
     private final UserRepository userRepository;
 
-    public DashboardOauthAuthenticationProvider(UserRepository userRepository) {
+    public DashboardAuthenticationProvider(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -28,15 +28,15 @@ public class DashboardOauthAuthenticationProvider implements AuthenticationProvi
         final String name = authentication.getName();
         final Object details = authentication.getDetails();
 
-        if (!(details instanceof DashboardOAuth2AuthenticationDetails)) {
+        if (!(details instanceof DashboardAuthenticationDetails)) {
             throw new InternalAuthenticationServiceException("The authentication details [" + details
-                  + "] are not an instance of " + DashboardOAuth2AuthenticationDetails.class.getSimpleName());
+                  + "] are not an instance of " + DashboardAuthenticationDetails.class.getSimpleName());
         }
 
         try {
             final User byName = userRepository.findByName(name);
             if (byName == null) {
-                final DashboardOAuth2AuthenticationDetails oauthDetails = (DashboardOAuth2AuthenticationDetails) details;
+                final DashboardAuthenticationDetails oauthDetails = (DashboardAuthenticationDetails) details;
 
                 final User user = new User();
                 user.setName(name);

@@ -11,9 +11,9 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
  * @author Sebastien Gerard
  */
 @SuppressWarnings("serial")
-public class DashboardOAuth2AuthenticationDetails extends OAuth2AuthenticationDetails {
+public class DashboardAuthenticationDetails extends OAuth2AuthenticationDetails {
 
-    private final boolean managingApp;
+    private final boolean managingService;
     private final String userFullName;
 
     /**
@@ -21,13 +21,13 @@ public class DashboardOAuth2AuthenticationDetails extends OAuth2AuthenticationDe
      * (it won't create one).
      *
      * @param request that the authentication request was received from
-     * @param managingApp flag indicating whether the current user is allowed to manage
+     * @param managingService flag indicating whether the current user is allowed to manage
      * @param userFullName the full user name (first name + last name)
      */
-    public DashboardOAuth2AuthenticationDetails(HttpServletRequest request, boolean managingApp, String userFullName) {
+    public DashboardAuthenticationDetails(HttpServletRequest request, boolean managingService, String userFullName) {
         super(request);
 
-        this.managingApp = managingApp;
+        this.managingService = managingService;
         this.userFullName = userFullName;
     }
 
@@ -35,8 +35,8 @@ public class DashboardOAuth2AuthenticationDetails extends OAuth2AuthenticationDe
      * Returns the flag indicating whether the current user is allowed to manage
      * the current service instance.
      */
-    public boolean isManagingApp() {
-        return managingApp;
+    public boolean isManagingService() {
+        return managingService;
     }
 
     /**

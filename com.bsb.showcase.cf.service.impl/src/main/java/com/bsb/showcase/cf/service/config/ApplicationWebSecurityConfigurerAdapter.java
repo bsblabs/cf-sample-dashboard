@@ -41,8 +41,8 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Qualifier("oAuthAuthenticationProvider")
-    private AuthenticationProvider oAuthAuthenticationProvider;
+    @Qualifier("dashboardAuthenticationProvider")
+    private AuthenticationProvider dashboardAuthenticationProvider;
 
     @Bean(name = "authenticationManager")
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -78,7 +78,7 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
               .passwordEncoder(passwordEncoder)
               .rolePrefix("ROLE_");
 
-        auth.authenticationProvider(oAuthAuthenticationProvider);
+        auth.authenticationProvider(dashboardAuthenticationProvider);
     }
 
     /**
@@ -116,12 +116,12 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
         private RequestMatcher dashboardEntryPointMatcher;
 
         @Autowired
-        @Qualifier("oAuth2ClientContextFilter")
-        private FilterWrapper oAuth2ClientContextFilter;
+        @Qualifier("dashboardClientContextFilter")
+        private FilterWrapper dashboardClientContextFilter;
 
         @Autowired
-        @Qualifier("socialClientFilter")
-        private FilterWrapper socialClientFilter;
+        @Qualifier("dashboardSocialClientFilter")
+        private FilterWrapper dashboardSocialClientFilter;
 
         @Autowired
         @Qualifier("dashboardLogoutSuccessHandler")
@@ -136,12 +136,11 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
             http
                   .requestMatcher(dashboardEntryPointMatcher)
                   .authorizeRequests()
-                  .anyRequest().access(isManagingApp()).and()
-                  .authorizeRequests().anyRequest().hasRole(ROLE_USER)
+                  .anyRequest().access(isManagingApp())
                   .and()
 
-                  .addFilterBefore(oAuth2ClientContextFilter.unwrap(), AbstractPreAuthenticatedProcessingFilter.class)
-                  .addFilterBefore(socialClientFilter.unwrap(), AbstractPreAuthenticatedProcessingFilter.class)
+                  .addFilterBefore(dashboardClientContextFilter.unwrap(), AbstractPreAuthenticatedProcessingFilter.class)
+                  .addFilterBefore(dashboardSocialClientFilter.unwrap(), AbstractPreAuthenticatedProcessingFilter.class)
 
                   .logout()
                   .logoutSuccessHandler(dashboardLogoutSuccessHandler)

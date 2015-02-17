@@ -15,11 +15,11 @@ import org.springframework.security.web.RedirectStrategy;
  *
  * @author Sebastien Gerard
  */
-public class UaaLogoutRedirectStrategy implements RedirectStrategy {
+public class DashboardLogoutRedirectStrategy implements RedirectStrategy {
 
     private final String uaaLogoutUrl;
 
-    public UaaLogoutRedirectStrategy(String uaaLogoutUrl) {
+    public DashboardLogoutRedirectStrategy(String uaaLogoutUrl) {
         this.uaaLogoutUrl = uaaLogoutUrl;
     }
 

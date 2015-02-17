@@ -6,14 +6,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Sample Cloud Foundry service application.
+ *
  * @author Sebastien Gerard
  */
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-public class DashboardApplication {
+public class SampleCfServiceApplication {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(DashboardApplication.class, args);
+        SpringApplication.run(SampleCfServiceApplication.class, args);
     }
 }

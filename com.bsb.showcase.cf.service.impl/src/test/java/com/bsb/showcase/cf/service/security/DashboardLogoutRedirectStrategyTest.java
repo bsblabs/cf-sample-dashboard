@@ -13,11 +13,11 @@ import com.bsb.showcase.cf.service.AbstractCfServiceTest;
 /**
  * @author Sebastien Gerard
  */
-public class UaaLogoutRedirectStrategyTest extends AbstractCfServiceTest {
+public class DashboardLogoutRedirectStrategyTest extends AbstractCfServiceTest {
 
     @Test
     public void sendRedirect() throws IOException {
-        final UaaLogoutRedirectStrategy strategy = new UaaLogoutRedirectStrategy("http://uaa.domain.com");
+        final DashboardLogoutRedirectStrategy strategy = new DashboardLogoutRedirectStrategy("http://uaa.domain.com");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         strategy.sendRedirect(new MockHttpServletRequest(), response, "http://myApp.domain.com");

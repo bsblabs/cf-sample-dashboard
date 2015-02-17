@@ -21,11 +21,11 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
  *
  * @author Sebastien Gerard
  */
-public class DashboardOAuth2ClientAuthenticationProcessingFilter extends OAuth2ClientAuthenticationProcessingFilter {
+public class DashboardAuthenticationProcessingFilter extends OAuth2ClientAuthenticationProcessingFilter {
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> detailsSource;
 
-    public DashboardOAuth2ClientAuthenticationProcessingFilter() {
+    public DashboardAuthenticationProcessingFilter() {
         super("/");
     }
 
