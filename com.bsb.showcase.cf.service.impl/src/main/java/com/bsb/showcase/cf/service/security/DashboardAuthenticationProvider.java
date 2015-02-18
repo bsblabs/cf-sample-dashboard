@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import com.bsb.showcase.cf.service.user.User;
-import com.bsb.showcase.cf.service.user.UserRepository;
+import com.bsb.showcase.cf.service.user.DashboardUser;
+import com.bsb.showcase.cf.service.user.DashboardUserRepository;
 
 /**
  * {@link AuthenticationProvider} used to make the link between an OAuth user
@@ -17,9 +17,9 @@ import com.bsb.showcase.cf.service.user.UserRepository;
  */
 public class DashboardAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserRepository userRepository;
+    private final DashboardUserRepository userRepository;
 
-    public DashboardAuthenticationProvider(UserRepository userRepository) {
+    public DashboardAuthenticationProvider(DashboardUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -34,11 +34,11 @@ public class DashboardAuthenticationProvider implements AuthenticationProvider {
         }
 
         try {
-            final User byName = userRepository.findByName(name);
+            final DashboardUser byName = userRepository.findByName(name);
             if (byName == null) {
                 final DashboardAuthenticationDetails oauthDetails = (DashboardAuthenticationDetails) details;
 
-                final User user = new User();
+                final DashboardUser user = new DashboardUser();
                 user.setName(name);
                 user.setFullName(oauthDetails.getUserFullName());
 

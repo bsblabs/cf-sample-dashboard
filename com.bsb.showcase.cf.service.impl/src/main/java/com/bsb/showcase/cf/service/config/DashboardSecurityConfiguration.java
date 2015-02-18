@@ -38,7 +38,7 @@ import com.bsb.showcase.cf.service.security.DashboardAuthenticationProcessingFil
 import com.bsb.showcase.cf.service.security.DashboardAuthenticationProvider;
 import com.bsb.showcase.cf.service.security.DashboardAuthenticationSuccessHandler;
 import com.bsb.showcase.cf.service.security.DashboardLogoutRedirectStrategy;
-import com.bsb.showcase.cf.service.user.UserRepository;
+import com.bsb.showcase.cf.service.user.DashboardUserRepository;
 
 /**
  * {@link Configuration} related to the dashboard security.
@@ -48,8 +48,6 @@ import com.bsb.showcase.cf.service.user.UserRepository;
 @Configuration
 public class DashboardSecurityConfiguration {
 
-    public static final String CURRENT_URI = "currentUri";
-
     /**
      * Returns the SPeL expression checking that the current user is authorized
      * to manage this service.
@@ -58,7 +56,7 @@ public class DashboardSecurityConfiguration {
         return "(authentication.details != null) " +
               "and (authentication.details instanceof T(" + DashboardAuthenticationDetails.class.getName() + ")) "
               + "and authentication.details.managingService " +
-              "and hasRole('ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_USER + "')";
+              "and hasRole('ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_DASHBOARD + "')";
     }
 
     @Value("${cf.uaa.oauth.client.id}")
@@ -157,7 +155,10 @@ public class DashboardSecurityConfiguration {
     public AccessTokenRequest dashboardAccessTokenRequest() {
         final DefaultAccessTokenRequest request = new DefaultAccessTokenRequest(httpServletRequest.getParameterMap());
 
-        request.setCurrentUri(httpServletRequest.getAttribute(CURRENT_URI).toString());
+        final Object currentUri = httpServletRequest.getAttribute(OAuth2ClientContextFilter.CURRENT_URI);
+        if (currentUri != null) {
+            request.setCurrentUri(currentUri.toString());
+        }
 
         return request;
     }
@@ -174,7 +175,7 @@ public class DashboardSecurityConfiguration {
         final DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
 
         final DefaultUserAuthenticationConverter userTokenConverter = new DefaultUserAuthenticationConverter();
-        userTokenConverter.setDefaultAuthorities(new String[]{"ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_USER});
+        userTokenConverter.setDefaultAuthorities(new String[]{"ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_DASHBOARD});
 
         defaultAccessTokenConverter.setUserTokenConverter(userTokenConverter);
 
@@ -203,7 +204,7 @@ public class DashboardSecurityConfiguration {
 
     @Bean(name = "dashboardAuthenticationProvider")
     @Autowired
-    public DashboardAuthenticationProvider dashboardAuthenticationProvider(UserRepository userRepository) {
+    public DashboardAuthenticationProvider dashboardAuthenticationProvider(DashboardUserRepository userRepository) {
         return new DashboardAuthenticationProvider(userRepository);
     }
 

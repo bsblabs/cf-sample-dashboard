@@ -2,38 +2,38 @@ package com.bsb.showcase.cf.test.service.user;
 
 import static org.junit.Assert.*;
 
-import com.bsb.showcase.cf.service.user.User;
-import com.bsb.showcase.cf.service.user.UserRepository;
+import com.bsb.showcase.cf.service.user.DashboardUser;
+import com.bsb.showcase.cf.service.user.DashboardUserRepository;
 
 /**
  * @author Sebastien Gerard
  */
 public final class UserTestHelper {
 
-    private final UserRepository repository;
+    private final DashboardUserRepository repository;
 
-    public UserTestHelper(UserRepository repository) {
+    public UserTestHelper(DashboardUserRepository repository) {
         this.repository = repository;
     }
 
-    public static User johnUser() {
-        return new User(0L, "john", "John Smith");
+    public static DashboardUser johnUser() {
+        return new DashboardUser(0L, "john", "John Smith");
     }
 
-    public static void assertPersistentUserEquals(User expected, User actual) {
+    public static void assertPersistentUserEquals(DashboardUser expected, DashboardUser actual) {
         assertUserEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
     }
 
-    public static void assertUserEquals(User expected, User actual) {
+    public static void assertUserEquals(DashboardUser expected, DashboardUser actual) {
         assertEquals(expected != null, actual != null);
 
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getFullName(), actual.getFullName());
     }
 
-    public User assertExists(User user){
-        final User found = repository.findByName(user.getName());
+    public DashboardUser assertExists(DashboardUser user){
+        final DashboardUser found = repository.findByName(user.getName());
 
         assertUserEquals(user, found);
 

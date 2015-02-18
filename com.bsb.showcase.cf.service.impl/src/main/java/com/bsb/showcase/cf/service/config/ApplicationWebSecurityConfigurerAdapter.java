@@ -31,9 +31,9 @@ import org.springframework.web.context.request.RequestContextListener;
 @EnableWebMvcSecurity
 public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-    public static final String ROLE_USER = "USER";
+    public static final String ROLE_DASHBOARD = "DASHBOARD";
 
-    public static final String ROLE_TECH = "TECH";
+    public static final String ROLE_WEB_SERVICE = "WEB_SERVICE";
 
     @Autowired
     private DataSource dataSource;
@@ -76,7 +76,7 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
               .jdbcAuthentication()
               .dataSource(dataSource)
               .usersByUsernameQuery("select name,password,true from WEB_SERVICE_USER where name=?")
-              .authoritiesByUsernameQuery("select name, '" + ROLE_TECH + "' from WEB_SERVICE_USER where name=?")
+              .authoritiesByUsernameQuery("select name, '" + ROLE_WEB_SERVICE + "' from WEB_SERVICE_USER where name=?")
               .passwordEncoder(passwordEncoder)
               .rolePrefix("ROLE_");
 
@@ -99,7 +99,7 @@ public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigur
             http
                   .requestMatcher(webServiceEntryPointMatcher)
                   .authorizeRequests()
-                  .anyRequest().hasRole(ROLE_TECH)
+                  .anyRequest().hasRole(ROLE_WEB_SERVICE)
                   .and()
                   .httpBasic()
                   .realmName("Sample Cloud Foundry Service");

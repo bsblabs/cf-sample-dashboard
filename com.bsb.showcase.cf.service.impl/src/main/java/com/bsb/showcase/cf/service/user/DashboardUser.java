@@ -16,7 +16,7 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity
 @SuppressWarnings("serial")
-public class User  implements Serializable {
+public class DashboardUser implements Serializable {
 
     @Id
     @GeneratedValue
@@ -29,10 +29,10 @@ public class User  implements Serializable {
     @Column(nullable = false)
     private String fullName;
 
-    public User() {
+    public DashboardUser() {
     }
 
-    public User(long id, String name, String fullName) {
+    public DashboardUser(long id, String name, String fullName) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;

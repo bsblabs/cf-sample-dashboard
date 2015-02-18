@@ -17,8 +17,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bsb.showcase.cf.service.AbstractCfServiceTest;
-import com.bsb.showcase.cf.service.user.User;
-import com.bsb.showcase.cf.service.user.UserRepository;
+import com.bsb.showcase.cf.service.user.DashboardUser;
+import com.bsb.showcase.cf.service.user.DashboardUserRepository;
 import com.bsb.showcase.cf.test.service.user.UserTestHelper;
 
 /**
@@ -31,7 +31,7 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
     private DashboardAuthenticationProvider provider;
 
     @Autowired
-    private UserRepository userRepository;
+    private DashboardUserRepository userRepository;
 
     private UserTestHelper testHelper;
 
@@ -52,7 +52,7 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
 
     @Test
     public void authenticateUserAlreadyExist() {
-        final User john = userRepository.save(johnUser());
+        final DashboardUser john = userRepository.save(johnUser());
 
         createProvider().authenticate(createAuthentication(john));
 
@@ -61,7 +61,7 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
 
     @Test
     public void authenticateUserNotExist() {
-        final User john = johnUser();
+        final DashboardUser john = johnUser();
 
         createProvider().authenticate(createAuthentication(john));
 
@@ -70,8 +70,8 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
 
     @Test(expected = InternalAuthenticationServiceException.class)
     public void authenticateErrorSave(){
-        final UserRepository mock = mock(UserRepository.class);
-        when(mock.save(Matchers.<User>any()))
+        final DashboardUserRepository mock = mock(DashboardUserRepository.class);
+        when(mock.save(Matchers.<DashboardUser>any()))
               .thenThrow(new RuntimeException("Planned exception"));
 
         createProvider(mock).authenticate(createAuthentication(johnUser()));
@@ -81,11 +81,11 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
         return createProvider(userRepository);
     }
 
-    private AuthenticationProvider createProvider(UserRepository repository) {
+    private AuthenticationProvider createProvider(DashboardUserRepository repository) {
         return new DashboardAuthenticationProvider(repository);
     }
 
-    private TestingAuthenticationToken createAuthentication(User user) {
+    private TestingAuthenticationToken createAuthentication(DashboardUser user) {
         final TestingAuthenticationToken auth = new TestingAuthenticationToken(user.getName(), null);
 
         auth.setDetails(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, user.getFullName()));

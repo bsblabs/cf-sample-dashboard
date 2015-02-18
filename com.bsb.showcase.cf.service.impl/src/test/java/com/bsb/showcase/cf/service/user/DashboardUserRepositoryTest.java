@@ -13,25 +13,25 @@ import com.bsb.showcase.cf.service.AbstractCfServiceTest;
  * @author Sebastien Gerard
  */
 @Transactional
-public class UserRepositoryTest extends AbstractCfServiceTest {
+public class DashboardUserRepositoryTest extends AbstractCfServiceTest {
 
     @Autowired
-    private UserRepository repository;
+    private DashboardUserRepository repository;
 
     @Test
     public void findByName() {
-        final User john = repository.save(johnUser());
+        final DashboardUser john = repository.save(johnUser());
 
-        final User foundByName = repository.findByName(john.getName());
+        final DashboardUser foundByName = repository.findByName(john.getName());
 
         assertPersistentUserEquals(john, foundByName);
     }
 
     @Test
     public void findByNameNoMatch() {
-        final User john = repository.save(johnUser());
+        final DashboardUser john = repository.save(johnUser());
 
-        final User foundByName = repository.findByName(john.getName() + "2");
+        final DashboardUser foundByName = repository.findByName(john.getName() + "2");
 
         assertNull(foundByName);
     }
