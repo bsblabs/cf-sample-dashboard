@@ -1,6 +1,6 @@
 package com.bsb.showcase.cf.service.user;
 
-import static com.bsb.showcase.cf.test.service.user.UserTestUtils.*;
+import static com.bsb.showcase.cf.test.service.user.UserTestHelper.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;

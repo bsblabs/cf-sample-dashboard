@@ -114,7 +114,7 @@ public class DashboardSecurityConfiguration {
               = new DashboardAuthenticationProcessingFilter();
 
         filter.setRestTemplate(dashboardRestOperations());
-        filter.setTokenServices(resourceServerTokenServices());
+        filter.setTokenServices(dashboardResourceServerTokenServices());
         filter.setAuthenticationManager(authenticationManager);
         filter.setRequiresAuthenticationRequestMatcher(dashboardEntryPointMatcher());
         filter.setDetailsSource(dashboardAuthenticationDetailsSource());
@@ -169,8 +169,8 @@ public class DashboardSecurityConfiguration {
         return new OAuth2RestTemplate(dashboardProtectedResourceDetails(), dashboardClientContext());
     }
 
-    @Bean(name = "accessTokenConverter")
-    public AccessTokenConverter accessTokenConverter() {
+    @Bean(name = "dashboardAccessTokenConverter")
+    public AccessTokenConverter dashboardAccessTokenConverter() {
         final DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
 
         final DefaultUserAuthenticationConverter userTokenConverter = new DefaultUserAuthenticationConverter();
@@ -181,16 +181,16 @@ public class DashboardSecurityConfiguration {
         return defaultAccessTokenConverter;
     }
 
-    @Bean(name = "resourceServerTokenServices")
+    @Bean(name = "dashboardResourceServerTokenServices")
     @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
     @Autowired
-    public ResourceServerTokenServices resourceServerTokenServices() {
+    public ResourceServerTokenServices dashboardResourceServerTokenServices() {
         final RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
 
         remoteTokenServices.setClientId(clientId);
         remoteTokenServices.setClientSecret(clientSecret);
         remoteTokenServices.setCheckTokenEndpointUrl(checkTokenUri);
-        remoteTokenServices.setAccessTokenConverter(accessTokenConverter());
+        remoteTokenServices.setAccessTokenConverter(dashboardAccessTokenConverter());
 
         return remoteTokenServices;
     }

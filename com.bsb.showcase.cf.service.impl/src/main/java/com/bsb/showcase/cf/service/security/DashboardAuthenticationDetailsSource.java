@@ -43,28 +43,9 @@ public class DashboardAuthenticationDetailsSource
     private final String apiUrl;
 
     /**
-     * @param restTemplate the template to use to contact Cloud components
-     * @param serviceInstanceIdFile the file containing the service instance id
-     * @param userInfoUrl the URL used to get the current OAuth user details
-     * @param apiUrl the URL used to get the service instance permission
-     */
-    public DashboardAuthenticationDetailsSource(RestTemplate restTemplate, String serviceInstanceIdFile,
-                                                String userInfoUrl, String apiUrl) {
-        this.restTemplate = restTemplate;
-        this.serviceInstanceIdFile = serviceInstanceIdFile;
-        this.userInfoUrl = userInfoUrl;
-        this.apiUrl = apiUrl;
-    }
-
-    @Override
-    public DashboardAuthenticationDetails buildDetails(HttpServletRequest request) {
-        return new DashboardAuthenticationDetails(request, isManagingApp(), getUserFullName());
-    }
-
-    /**
      * Returns the full name (first + last name) contains in the specified map.
      */
-    protected String getUserFullName(Map<String, String> map) {
+    protected static String getUserFullName(Map<String, String> map) {
         if (map.containsKey("name")) {
             return map.get("name");
         }
@@ -94,6 +75,25 @@ public class DashboardAuthenticationDetailsSource
             }
         }
         return null;
+    }
+
+    /**
+     * @param restTemplate the template to use to contact Cloud components
+     * @param serviceInstanceIdFile the file containing the service instance id
+     * @param userInfoUrl the URL used to get the current OAuth user details
+     * @param apiUrl the URL used to get the service instance permission
+     */
+    public DashboardAuthenticationDetailsSource(RestTemplate restTemplate, String serviceInstanceIdFile,
+                                                String userInfoUrl, String apiUrl) {
+        this.restTemplate = restTemplate;
+        this.serviceInstanceIdFile = serviceInstanceIdFile;
+        this.userInfoUrl = userInfoUrl;
+        this.apiUrl = apiUrl;
+    }
+
+    @Override
+    public DashboardAuthenticationDetails buildDetails(HttpServletRequest request) {
+        return new DashboardAuthenticationDetails(request, isManagingApp(), getUserFullName());
     }
 
     /**

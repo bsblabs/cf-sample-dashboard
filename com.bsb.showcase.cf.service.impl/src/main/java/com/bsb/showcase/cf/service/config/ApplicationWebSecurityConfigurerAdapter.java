@@ -24,6 +24,8 @@ import org.springframework.web.context.request.RequestContextListener;
 
 /**
  * {@link WebSecurityConfigurerAdapter} securing the web application.
+ *
+ * @author Sebastien Gerard
  */
 @Configuration
 @EnableWebMvcSecurity

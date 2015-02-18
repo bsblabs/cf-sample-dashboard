@@ -72,7 +72,7 @@ public class WebServiceUserInitializerTest extends AbstractCfServiceTest {
     }
 
     @PostConstruct
-    void initializeHelper(){
+    private void initializeHelper(){
         testHelper = new WebServiceUserTestHelper(repository);
     }
 }

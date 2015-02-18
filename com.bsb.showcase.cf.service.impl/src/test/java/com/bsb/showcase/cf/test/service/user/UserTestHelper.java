@@ -1,15 +1,19 @@
 package com.bsb.showcase.cf.test.service.user;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import com.bsb.showcase.cf.service.user.User;
+import com.bsb.showcase.cf.service.user.UserRepository;
 
 /**
  * @author Sebastien Gerard
  */
-public final class UserTestUtils {
+public final class UserTestHelper {
 
-    private UserTestUtils() {
+    private final UserRepository repository;
+
+    public UserTestHelper(UserRepository repository) {
+        this.repository = repository;
     }
 
     public static User johnUser() {
@@ -26,5 +30,13 @@ public final class UserTestUtils {
 
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getFullName(), actual.getFullName());
+    }
+
+    public User assertExists(User user){
+        final User found = repository.findByName(user.getName());
+
+        assertUserEquals(user, found);
+
+        return found;
     }
 }

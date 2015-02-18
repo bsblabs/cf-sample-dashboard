@@ -1,26 +1,31 @@
 package com.bsb.showcase.cf.service.security;
 
+import static com.bsb.showcase.cf.test.service.user.UserTestHelper.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import org.junit.Rule;
+import javax.annotation.PostConstruct;
+
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bsb.showcase.cf.service.AbstractCfServiceTest;
-import com.bsb.showcase.cf.service.user.EntityCleanupRule;
 import com.bsb.showcase.cf.service.user.User;
 import com.bsb.showcase.cf.service.user.UserRepository;
+import com.bsb.showcase.cf.test.service.user.UserTestHelper;
 
 /**
  * @author Sebastien Gerard
  */
+@Transactional
 public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
-
-    @Rule
-    public final EntityCleanupRule cleanupRule = new EntityCleanupRule();
 
     @Autowired
     private DashboardAuthenticationProvider provider;
@@ -28,45 +33,68 @@ public class DashboardAuthenticationProviderTest extends AbstractCfServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    private UserTestHelper testHelper;
+
+    @Test
+    public void supportsOAuth2AuthenticationSupported() {
+        assertTrue(createProvider().supports(OAuth2Authentication.class));
+    }
+
+    @Test
+    public void supportsTestingAuthenticationTokenNotSupported() {
+        assertFalse(createProvider().supports(TestingAuthenticationToken.class));
+    }
+
     @Test(expected = InternalAuthenticationServiceException.class)
     public void authenticationNotOauth() {
         provider.authenticate(new TestingAuthenticationToken("user", "pwd"));
     }
 
     @Test
-    public void userAlreadyExist() {
-        final User user = new User();
-        user.setName("DashboardAuthenticationProviderTest.userAlreadyExist");
-        user.setFullName("John Smith");
+    public void authenticateUserAlreadyExist() {
+        final User john = userRepository.save(johnUser());
 
-        cleanupRule.saveEntity(userRepository, user);
+        createProvider().authenticate(createAuthentication(john));
 
-        provider.authenticate(createAuthentication(user.getName(), user.getFullName()));
-
-        assertTrue(userRepository.exists(user.getId()));
+        testHelper.assertExists(john);
     }
 
     @Test
-    public void userNotExist() {
-        final String name = "DashboardAuthenticationProviderTest.userAlreadyExist";
-        final String fullName = "John Smith";
+    public void authenticateUserNotExist() {
+        final User john = johnUser();
 
-        provider.authenticate(createAuthentication(name, fullName));
+        createProvider().authenticate(createAuthentication(john));
 
-        final User user = userRepository.findByName(name);
-        try {
-            assertEquals(name, user.getName());
-            assertEquals(fullName, user.getFullName());
-        } finally {
-            userRepository.delete(user);
-        }
+        testHelper.assertExists(john);
     }
 
-    private TestingAuthenticationToken createAuthentication(String name, String fullName) {
-        final TestingAuthenticationToken auth = new TestingAuthenticationToken(name, null);
+    @Test(expected = InternalAuthenticationServiceException.class)
+    public void authenticateErrorSave(){
+        final UserRepository mock = mock(UserRepository.class);
+        when(mock.save(Matchers.<User>any()))
+              .thenThrow(new RuntimeException("Planned exception"));
 
-        auth.setDetails(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, fullName));
+        createProvider(mock).authenticate(createAuthentication(johnUser()));
+    }
+
+    private AuthenticationProvider createProvider() {
+        return createProvider(userRepository);
+    }
+
+    private AuthenticationProvider createProvider(UserRepository repository) {
+        return new DashboardAuthenticationProvider(repository);
+    }
+
+    private TestingAuthenticationToken createAuthentication(User user) {
+        final TestingAuthenticationToken auth = new TestingAuthenticationToken(user.getName(), null);
+
+        auth.setDetails(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, user.getFullName()));
 
         return auth;
+    }
+
+    @PostConstruct
+    private void initializeHelper(){
+        this.testHelper = new UserTestHelper(this.userRepository);
     }
 }
