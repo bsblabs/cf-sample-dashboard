@@ -31,8 +31,14 @@ import org.springframework.web.context.request.RequestContextListener;
 @EnableWebMvcSecurity
 public class ApplicationWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Role that users accessing the dashboard endpoint must have.
+     */
     public static final String ROLE_DASHBOARD = "DASHBOARD";
 
+    /**
+     * Role that users accessing a web-service endpoint must have.
+     */
     public static final String ROLE_WEB_SERVICE = "WEB_SERVICE";
 
     @Autowired

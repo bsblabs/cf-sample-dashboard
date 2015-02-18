@@ -1,5 +1,6 @@
 package com.bsb.showcase.cf.service.config;
 
+import static com.bsb.showcase.cf.service.config.ApplicationWebSecurityConfigurerAdapter.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static org.springframework.security.core.authority.AuthorityUtils.*;
@@ -96,7 +97,7 @@ public class ApplicationWebSecurityConfigurerAdapterIT extends AbstractCfService
     }
 
     @Test
-    public void accessDashboardAuthentication() throws Exception {
+    public void accessDashboardAuthenticated() throws Exception {
         mvc
               .perform(
                     request(HttpMethod.GET, "/dashboard/")
@@ -107,9 +108,30 @@ public class ApplicationWebSecurityConfigurerAdapterIT extends AbstractCfService
     }
 
     @Test
+    public void accessDashboardAuthenticatedWrongRole() throws Exception {
+        mvc
+              .perform(
+                    request(HttpMethod.GET, "/dashboard/")
+                          .session(mockSession)
+                          .with(authentication(createAuthentication("John Smith", true, "STUFF")))
+              )
+              .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+    }
+
+    @Test
+    public void accessDashboardAuthenticatedNoManaged() throws Exception {
+        mvc
+              .perform(
+                    request(HttpMethod.GET, "/dashboard/")
+                          .session(mockSession)
+                          .with(authentication(createAuthentication("John Smith", false, ROLE_DASHBOARD)))
+              )
+              .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+    }
+
+    @Test
     public void accessDashboardWebServiceCred() throws Exception {
         mvc
-
               .perform(
                     request(HttpMethod.GET, "/dashboard/")
                           .with(httpBasic("admin", "admin2"))
@@ -119,7 +141,23 @@ public class ApplicationWebSecurityConfigurerAdapterIT extends AbstractCfService
               .andExpect(status().is(HttpStatus.FOUND.value())); // redirection
     }
 
+    @Test
+    public void accessDashboardLogout() throws Exception {
+        mvc
+              .perform(
+                    request(HttpMethod.GET, "/dashboard/logout")
+                          .session(mockSession)
+                          .with(authentication(johnSmithAuthentication()))
+              )
+              .andExpect(status().is(HttpStatus.FOUND.value()))
+              .andExpect(redirectedUrlPattern("**/logout.do?redirect=/"));
+    }
+
     private OAuth2Authentication johnSmithAuthentication() {
+        return createAuthentication("John Smith", true, ROLE_DASHBOARD);
+    }
+
+    private OAuth2Authentication createAuthentication(String userFullName, boolean managingService, String role) {
         final OAuth2Authentication oauthAuthentication = new OAuth2Authentication(
               new OAuth2Request(
                     singletonMap("client_id", "myOauthITClient"),
@@ -133,9 +171,10 @@ public class ApplicationWebSecurityConfigurerAdapterIT extends AbstractCfService
                     null
               ),
               new UsernamePasswordAuthenticationToken("marissa", null,
-                    createAuthorityList("ROLE_" + ApplicationWebSecurityConfigurerAdapter.ROLE_DASHBOARD)));
+                    createAuthorityList("ROLE_" + role)));
 
-        oauthAuthentication.setDetails(new DashboardAuthenticationDetails(new MockHttpServletRequest(), true, "John Smith"));
+        oauthAuthentication.setDetails(
+              new DashboardAuthenticationDetails(new MockHttpServletRequest(), managingService, userFullName));
 
         return oauthAuthentication;
     }
