@@ -17,15 +17,24 @@ import com.bsb.showcase.cf.service.security.DashboardAuthenticationDetails;
 @RequestMapping("/dashboard/")
 public class DashboardController {
 
+    /**
+     * Model attribute referencing the full name of the current user.
+     */
+    public static final String USER_FULL_NAME = "userFullName";
+
+    /**
+     * View name referencing the dashboard home page.
+     */
+    public static final String HOME_VIEW = "home";
+
     @RequestMapping("")
     public ModelAndView home(ModelAndView modelAndView) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-
-        modelAndView.addObject("userFullName",
+        modelAndView.addObject(USER_FULL_NAME,
               ((DashboardAuthenticationDetails) authentication.getDetails()).getUserFullName());
 
-        modelAndView.setViewName("home");
+        modelAndView.setViewName(HOME_VIEW);
 
         return modelAndView;
     }
