@@ -28,6 +28,7 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.RequestContextFilter;
 
 import com.bsb.showcase.cf.service.AbstractCfServiceTest;
 import com.bsb.showcase.cf.service.security.DashboardAuthenticationDetails;
@@ -182,6 +183,7 @@ public class ApplicationWebSecurityConfigurerAdapterIT extends AbstractCfService
     @PostConstruct
     private void initialize() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+              .addFilter(new RequestContextFilter())
               .addFilter(springSecurityFilterChain)
               .build();
 
